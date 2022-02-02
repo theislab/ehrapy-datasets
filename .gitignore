@@ -133,4 +133,5 @@ dmypy.json
 *.tsv
 *.h5ad
 *.zip
+*.zip.*
 *.tar.gz
