@@ -98,4 +98,3 @@ http://archive.ics.uci.edu/ml/datasets/Diabetes+130-US+hospitals+for+years+1999-
 4. Map disease types to categories to have categorical and not numerical data in disease column map according to table 2 of paper https://downloads.hindawi.com/journals/bmri/2014/781670.pdf we'll do it for primary and secondary diagnosis separately.
 5. Some columns are categorical but have multiple codes meaning "Unknown". Map them all to None, Data for that is taken from "IDs_mappings", Others map to their classes and store as categorical.
 6. Rename columns time_in_hospital -> time_in_hospital_days, change -> change_of_meds, number_outpatient -> number_outpatient_visit, number_emergency -> number_emergency_visits, number_inpatient -> number_inpatient_visits
-7. 
