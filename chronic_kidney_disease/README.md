@@ -48,4 +48,8 @@ https://github.com/odsti/datasets/tree/master/ckd
 ## Modifications
 
 1. Added a patient_id as the first column
-
+2. Mapped normal/abnormal to 0 and 1 respectively.
+3. Mapped notpresent and present to 0 and 1 respectively.
+4. Mapped no/yes to 0 and 1 respectively.
+5. Mapped poor/good to 0 and 1 respectively.
+6. Mapped notckd and ckd to 0 and 1 respectively.
