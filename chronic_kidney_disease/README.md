@@ -16,13 +16,13 @@ Missing Values? Yes.
 
 - Age: age in years
 - Blood Pressure: BP in mm/Hg (MB: presumably diastolic blood pressure)
-- Specific Gravity: one of (1.005,1.010,1.015,1.020,1.025)
-- Albumin: one of (0,1,2,3,4,5)
-- Sugar: one of (0,1,2,3,4,5)
-- Red Blood Cells: one of ("normal", "abnormal")
-- Pus Cell: one of ("normal", "abnormal")
-- Pus Cell clumps: one of ("present", "notpresent")
-- Bacteria: one of ("present", "notpresent")
+- Specific Gravity: one of (1.005, 1.010, 1.015, 1.020, 1.025)
+- Albumin: one of (0, 1, 2, 3, 4, 5)
+- Sugar: one of (0, 1, 2, 3, 4, 5)
+- Red Blood Cells: one of (0, 1). 0 is for "normal", 1 is for "abnormal".
+- Pus Cell: one of (0, 1). 0 is for "normal", 1 is for "abnormal".
+- Pus Cell clumps: one of (0, 1). 0 is for "notpresent", 1 is for "present".
+- Bacteria: one of (0, 1). 0 is for "notpresent", 1 is for "present".
 - Blood Glucose Random: in mgs/dl
 - Blood Urea: in mgs/dl
 - Serum Creatinine: in mgs/dl
@@ -32,13 +32,13 @@ Missing Values? Yes.
 - Packed Cell Volume
 - White Blood Cell Count: in cells/cumm
 - Red Blood Cell Count: in millions/cmm
-- Hypertension: one of ("yes", "no")
-- Diabetes Mellitus: one of ("yes", "no")
-- Coronary Artery Disease: one of ("yes", "no")
-- Appetite: one of ("good", "poor")
-- Pedal Edema: one of ("yes", "no")
-- Anemia: one of ("yes", "no")
-- [target] Class : one of ("ckd", "notckd"). "ckd" stands for Chronic Kidney Disease.
+- Hypertension: one of (0, 1). 0 is for "no", 1 is for "yes".
+- Diabetes Mellitus: one of (0, 1). 0 is for "no", 1 is for "yes". 
+- Coronary Artery Disease: one of (0, 1). 0 is for "no", 1 is for "yes". 
+- Appetite: one of (0, 1). 0 is for "good", 1 is for "poor".
+- Pedal Edema: one of (0, 1). 0 is for "no", 1 is for "yes". 
+- Anemia: one of (0, 1). 0 is for "no", 1 is for "yes". 
+- [target] Class : one of (0, 1). 0 is for "Not Chronic Kidney Disease", 1 is for "Chronic Kidney Disease". 
 
 ## Source
 
@@ -51,5 +51,5 @@ https://github.com/odsti/datasets/tree/master/ckd
 2. Mapped normal/abnormal to 0 and 1 respectively.
 3. Mapped notpresent and present to 0 and 1 respectively.
 4. Mapped no/yes to 0 and 1 respectively.
-5. Mapped poor/good to 0 and 1 respectively.
+5. Mapped good/poor to 0 and 1 respectively.
 6. Mapped notckd and ckd to 0 and 1 respectively.
