@@ -2,7 +2,7 @@
 
 ## Description
 
-This dataset contains the medical records of 270 patients, collected during their follow-up period, where each patient profile has 10 clinical features.\
+This dataset contains the medical records of 270 patients, collected during their follow-up period, where each patient profile has 13 clinical features.\
 Data Set Characteristics: Multivariate\
 Number of Instances: 270\
 Area: Life\
