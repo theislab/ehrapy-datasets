@@ -30,7 +30,7 @@ jobs:
                   python-version: "3.9"
 
             - name: Install ehrapy
-              run: pip install https://github.com/theislab/ehrapy/
+              run: pip install ehrapy
 
             - name: Install nbconvert ipykernel
               run: pip install nbconvert ipykernel
