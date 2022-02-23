@@ -1,0 +1,44 @@
+name: Run Notebooks
+
+on:
+    - push
+    - pull_request_target
+
+jobs:
+    run:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                notebook:
+                    [
+                        "breast_tissue/breast_tissue.ipynb",
+                        "cervical_cancer_risk_factors/cervical_cancer_risk_factors.ipynb",
+                        "chronic_kidney_disease/chronic_kidney_disease.ipynb",
+                        "dermatology/dermatology.ipynb",
+                        "diabetes_130/diabetes_130.ipynb",
+                        "echocardiogram/echocardiogram.ipynb",
+                        "heart_failure/heart_failure.ipynb",
+                        "hepatitis/hepatitis.ipynb",
+                        "statlog_heart/statlog_heart.ipynb"
+                    ]
+        steps:
+            - uses: actions/checkout@v2
+                  
+            - name: Set up Python
+              uses: actions/setup-python@v2
+              with:
+                  python-version: "3.9"
+
+            - name: Install Poetry
+              run: |
+                  pip install poetry
+                  poetry --version
+
+            - name: Install ehrapy
+              run: pip install ehrapy
+
+            - name: Install nbconvert ipykernel
+              run: pip install nbconvert ipykernel
+
+            - name: Run ${{ matrix.notebook }} Notebook
+              run: jupyter nbconvert --to notebook --execute ${{ matrix.notebook }}
