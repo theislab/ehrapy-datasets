@@ -39,7 +39,6 @@ Missing Values? Yes
 ## Source
 
 http://archive.ics.uci.edu/ml/datasets/Hepatitis
-https://www.openml.org/d/55
 
 ## Modifications
 
