@@ -42,7 +42,7 @@ Missing Values? Yes.
 
 ## Source
 
-https://archive.ics.uci.edu/ml/datasets/Chronic_Kidney_Disease#
+https://archive.ics.uci.edu/ml/datasets/Chronic_Kidney_Disease#    
 https://github.com/odsti/datasets/tree/master/ckd
 
 ## Modifications
