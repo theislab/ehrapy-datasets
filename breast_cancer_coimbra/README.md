@@ -23,8 +23,8 @@ Missing Values? No
 - Adiponectin: µg/mL
 - Resistin: ng/mL
 - MCP-1: pg/dL
-- [target] - Class: one of (1, 2). 1=Healthy controls
-2=Patients.
+- [target] - Class: one of (0, 1). 0=Healthy controls
+1=Patients.
 
 
 ## Source
@@ -35,3 +35,4 @@ http://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Coimbra
 
 1. Added a patient_id as the first column.
 2. Changed column name of "Classification" to "Class".
+3. Changed Class from (1, 2) to (0, 1). 0=Healthy controls, 1=Patients.
