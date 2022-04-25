@@ -1,16 +1,16 @@
-# Statlog (Heart) Data Set
+# Heart Disease Data Set
 
 ## Description
 
-This dataset contains the medical records of 270 patients, collected during their follow-up period, where each patient profile has 13 clinical features.\
+This dataset contains the medical records of 303 patients, collected during their follow-up period, where each patient profile has 75 clinical features.\
 Data Set Characteristics: Multivariate\
-Number of Instances: 270\
+Number of Instances: 303\
 Area: Life\
-Attribute Characteristics: Real\
-Number of Attributes: 13\
-Date Donated: N/A\
-Associated Tasks: Categorical/Classification\
-Missing Values? No
+Attribute Characteristics: Categorical, Integer, Real\
+Number of Attributes: 75\
+Date Donated: 1988-07-01\
+Associated Tasks: Classification\
+Missing Values? Yes
 
 ## Columns
 - age: age in years
@@ -32,12 +32,10 @@ Missing Values? No
 
 ## Source
 
-http://archive.ics.uci.edu/ml/datasets/Statlog+%28Heart%29
+http://archive.ics.uci.edu/ml/datasets/Heart+Disease
 
 ## Modifications
 
 1. Added a patient_id as the first column
 2. Replaced the original encoding (1, 2) to (0, 1) in class attribute
 3. Added dataset_name to indicate the source of the dataset
-
-
