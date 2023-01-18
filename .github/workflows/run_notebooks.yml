@@ -23,7 +23,7 @@ jobs:
                         "breast_cancer_coimbra/breast_cancer_coimbra.ipynb",
                         "heart_disease/heart_disease.ipynb",
                         "parkinson_dataset_with_replicated_acoustic_features/parkinson_dataset_with_replicated_acoustic_features.ipynb",
-                        "parkinson's_disease_classification/parkinson's_disease_classification.ipynb",
+                        "parkinsons_disease_classification/parkinsons_disease_classification.ipynb",
                         "parkinsons/parkinsons.ipynb",
                         "parkinsons_telemonitoring/parkinsons_telemonitoring.ipynb",
                         "thyroid/thyroid.ipynb"
