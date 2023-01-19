@@ -19,7 +19,13 @@ jobs:
                         "echocardiogram/echocardiogram.ipynb",
                         "heart_failure/heart_failure.ipynb",
                         "hepatitis/hepatitis.ipynb",
-                        "statlog_heart/statlog_heart.ipynb"
+                        "statlog_heart/statlog_heart.ipynb",
+                        "breast_cancer_coimbra/breast_cancer_coimbra.ipynb",
+                        "heart_disease/heart_disease.ipynb",
+                        "parkinson_dataset_with_replicated_acoustic_features/parkinson_dataset_with_replicated_acoustic_features.ipynb",
+                        "parkinsons/parkinsons.ipynb",
+                        "parkinsons_telemonitoring/parkinsons_telemonitoring.ipynb",
+                        "thyroid/thyroid.ipynb"
                     ]
         steps:
             - uses: actions/checkout@v2
