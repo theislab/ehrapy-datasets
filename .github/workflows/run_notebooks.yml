@@ -25,15 +25,16 @@ jobs:
                         "parkinson_dataset_with_replicated_acoustic_features/parkinson_dataset_with_replicated_acoustic_features.ipynb",
                         "parkinsons/parkinsons.ipynb",
                         "parkinsons_telemonitoring/parkinsons_telemonitoring.ipynb",
-                        "thyroid/thyroid.ipynb"
+                        "thyroid/thyroid.ipynb",
+                        "mimic_2/mimic_2.ipynb"
                     ]
         steps:
             - uses: actions/checkout@v2
                   
             - name: Set up Python
-              uses: actions/setup-python@v2
+              uses: actions/setup-python@v4
               with:
-                  python-version: "3.9"
+                  python-version: "3.10"
 
             - name: Install ehrapy
               run: pip install ehrapy
