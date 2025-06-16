@@ -138,4 +138,5 @@ dmypy.json
 *.data
 *.names
 *.xls
+*.rar
 thyroid/thyroid_data
