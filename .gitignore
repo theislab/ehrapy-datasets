@@ -138,4 +138,4 @@ dmypy.json
 *.data
 *.names
 *.xls
-thyroid/archive.ics.uci.edu
+thyroid/thyroid_data
