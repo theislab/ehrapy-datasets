@@ -39,8 +39,8 @@ jobs:
               with:
                   python-version: "3.x"
 
-            - name: Install ehrapy
-              run: pip install ehrapy
+            - name: Install ehrapy ehrdata
+              run: pip install ehrapy ehrdata
 
             - name: Install nbconvert ipykernel
               run: pip install nbconvert ipykernel
