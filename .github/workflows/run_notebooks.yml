@@ -13,23 +13,25 @@ jobs:
             matrix:
                 notebook:
                     [
+                        "breast_cancer_coimbra/breast_cancer_coimbra.ipynb",
                         "breast_tissue/breast_tissue.ipynb",
                         "cervical_cancer_risk_factors/cervical_cancer_risk_factors.ipynb",
                         "chronic_kidney_disease/chronic_kidney_disease.ipynb",
                         "dermatology/dermatology.ipynb",
-                        "diabetes_130_raw/diabetes_130_raw.ipynb",
                         "diabetes_130_fairlearn/diabetes_130_fairlearn.ipynb",
+                        "diabetes_130_raw/diabetes_130_raw.ipynb",
                         "echocardiogram/echocardiogram.ipynb",
+                        "heart_disease/heart_disease.ipynb",
                         "heart_failure/heart_failure.ipynb",
                         "hepatitis/hepatitis.ipynb",
-                        "statlog_heart/statlog_heart.ipynb",
-                        "breast_cancer_coimbra/breast_cancer_coimbra.ipynb",
-                        "heart_disease/heart_disease.ipynb",
+                        "mimic_2/mimic_2.ipynb",
                         "parkinson_dataset_with_replicated_acoustic_features/parkinson_dataset_with_replicated_acoustic_features.ipynb",
+                        "parkinson's_disease_classification/parkinson's_disease_classification.ipynb",
                         "parkinsons/parkinsons.ipynb",
                         "parkinsons_telemonitoring/parkinsons_telemonitoring.ipynb",
-                        "thyroid/thyroid.ipynb",
-                        "mimic_2/mimic_2.ipynb"
+                        "statlog_heart/statlog_heart.ipynb",
+                        "thyroid/thyroid.ipynb"
+                        
                     ]
         steps:
             - uses: actions/checkout@v4
