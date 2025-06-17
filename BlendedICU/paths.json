@@ -1,12 +1,12 @@
 {
-  "data_path": "/home/andreas/Helmholtz/BLENDED_ICU/",
-  "eicu_source_path":"Y:/eICU/",
-  "mimic4_source_path": "/home/andreas/Helmholtz/MIMIC_Data/physionet.org/files/mimic-iv-demo/2.2/",
-  "mimic3_source_path": "Y:/mimic/III/",
-  "amsterdam_source_path": "Y:/UMC/",
-  "hirid_source_path": "Y:/hirid/",
-  "auxillary_files": "/home/andreas/Helmholtz/BlendedICU/auxillary_files/",
-  "vocabulary" : "/home/andreas/Helmholtz/BlendedICU/auxillary_files/OMOP_vocabulary/",
-  "user_input" : "/home/andreas/Helmholtz/BlendedICU/auxillary_files/user_input/",
-  "medication_mapping_files": "/home/andreas/Helmholtz/BlendedICU/auxillary_files/medication_mapping_files/"
+  "data_path": "BlendedICU/data",
+  "eicu_source_path": "BlendedICU/source/eicu",
+  "mimic4_source_path": "BlendedICU/source/mimic4",
+  "mimic3_source_path": "BlendedICU/source/mimic3",
+  "amsterdam_source_path": "BlendedICU/source/amsterdam",
+  "hirid_source_path": "BlendedICU/source/hirid",
+  "auxillary_files": "BlendedICU/auxillary_files",
+  "vocabulary": "BlendedICU/auxillary_files/OMOP_vocabulary",
+  "user_input": "BlendedICU/auxillary_files/user_input",
+  "medication_mapping_files": "BlendedICU/auxillary_files/medication_mapping_files"
 }
