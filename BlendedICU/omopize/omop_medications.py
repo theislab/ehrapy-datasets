@@ -7,10 +7,10 @@ class OMOP_Medications:
         '''A list of ingredients may be given as an input. 
         If ingredients is None, the user_input/medication_ingredients.csv
         file will be used as the list of ingredients.'''
-        self.pth_to_voc = pth_dic['vocabulary']
-        self.pth_user_input = pth_dic['user_input']
-        self.savedir = pth_dic['medication_mapping_files']
-        self.savepath = self.savedir+'ohdsi_icu_medications.csv'
+        self.pth_to_voc = Path(pth_dic['vocabulary'])
+        self.pth_user_input = Path(pth_dic['user_input'])
+        self.savedir = Path(pth_dic['medication_mapping_files'])
+        self.savepath = self.savedir / 'ohdsi_icu_medications.csv'
         
         self.concept = self._load_concept()
         self.relations = self._load_concept_relationship()
@@ -21,14 +21,14 @@ class OMOP_Medications:
 
     def _load_concept(self):
         print('Loading CONCEPT table...')
-        concept_pth = self.pth_to_voc+'CONCEPT.parquet'
+        concept_pth = self.pth_to_voc / 'CONCEPT.parquet'
         concept = pd.read_parquet(concept_pth,
                                   columns=['concept_id', 'concept_name'])
         return concept
     
     def _load_concept_relationship(self):
         print('Loading CONCEPT_RELATIONSHIP table...')
-        relationship_pth = self.pth_to_voc+'CONCEPT_RELATIONSHIP.parquet'
+        relationship_pth = self.pth_to_voc / 'CONCEPT_RELATIONSHIP.parquet'
         concept_relationship = pd.read_parquet(relationship_pth,
                                                columns=['concept_id_1',
                                                         'concept_id_2',
@@ -41,7 +41,7 @@ class OMOP_Medications:
         If ingredient is None: read ingredient file.
         else: use the ingredient list provided"""
         if ingredients is None: 
-            ingredients_pth = self.pth_user_input+'medication_ingredients.csv'    
+            ingredients_pth = self.pth_user_input / 'medication_ingredients.csv'    
             print(f'Loading ingredients from {ingredients_pth}')
             df = pd.read_csv(ingredients_pth)
             ingredients = df.ingredient.to_list()
@@ -55,7 +55,7 @@ class OMOP_Medications:
                              f'{vcounts.loc[vcounts>1].to_list()}')
 
     def _ensure_vocabulary_is_downloaded(self):
-        if not Path(self.pth_to_voc).is_dir():
+        if not self.pth_to_voc.is_dir():
             raise ValueError('Please download the RxNorm and RxNorm Extended'
                              'vocabularies from '
                              'https://athena.ohdsi.org/vocabulary/list')
@@ -65,7 +65,7 @@ class OMOP_Medications:
         med_concept_ids = (self.concept.loc[med_idx]
                                .reset_index()
                                .set_index('concept_name'))
-        med_concept_ids.to_parquet(self.savedir+'med_concept_ids.parquet')
+        med_concept_ids.to_parquet(self.savedir / 'med_concept_ids.parquet')
         print('Generating OMOP medication file...')
         keep_idx = self.relations.relationship_id == 'Has brand name'
         df = (self.relations.loc[keep_idx]

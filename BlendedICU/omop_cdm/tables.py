@@ -1,4 +1,6 @@
 from collections import OrderedDict
+import os
+from pathlib import Path
 
 import polars as pl
 import pandas as pd
@@ -6,7 +8,9 @@ import pyarrow as pa
 
 class CDMTables:
     def __init__(self):
-        pth = 'auxillary_files/OMOP_CDMv5.4_Field_Level.csv'
+        # Get the path to the auxillary files directory relative to this file
+        script_dir = Path(__file__).parent.parent.absolute()
+        pth = script_dir / 'auxillary_files' / 'OMOP_CDMv5.4_Field_Level.csv'
         self.field_level = pd.read_csv(pth)
         self._dtype_mapping = {'integer': int,
                                'Integer': int,

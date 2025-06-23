@@ -30,8 +30,10 @@ class NewMedicationProcessor(DataProcessor):
                  dose_unit_conversion_dic=None,
                  unit_offset=None,
                  offset_calc=False,
-                 col_admittime=None):
-        super().__init__(dataset)
+                 col_admittime=None,
+                 pth_dic=None,
+                 config_path=None):
+        super().__init__(dataset, pth_dic, config_path)
 
         self.med_mapping = self._load_med_mapping()
 

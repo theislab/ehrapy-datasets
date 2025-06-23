@@ -15,51 +15,65 @@ import polars as pl
 class DataProcessor:
     def __init__(self,
                  dataset,
+                 pth_dic=None,
+                 config_path=None,
                  datasets=('eicu', 'mimic4', 'mimic3', 'hirid', 'amsterdam')):
         self.datasets = datasets
         self.dataset = dataset
         self.SEED = 974
         self.n_patient_chunk = 1000
-        self.pth_dic = self._read_json('paths.json')
-        self.config = self._read_json('config.json')
+        
+        # Use provided paths dictionary or read from paths.json
+        if pth_dic is None:
+            self.pth_dic = self._read_json('paths.json')
+        else:
+            self.pth_dic = pth_dic
+            
+        # Use provided config path or default to BlendedICU/config.json
+        if config_path is None:
+            # Get the directory where this script is located
+            script_dir = Path(__file__).parent.parent.absolute()
+            config_path = script_dir / 'config.json'
+        
+        self.config = self._read_json(str(config_path))
         self.data_pth = self.pth_dic['data_path']
         self.blendedicu_pth = self.data_pth+'/blended_data/'
         self.labels_pths = {d: self._preprocessed_pth(d, 'labels') for d in self.datasets}
         self.diagnoses_pths = {d: self._preprocessed_pth(d, 'diagnoses') for d in self.datasets}
-        self.savepath = self.data_pth + self._datadir_name()
-        self.raw_as_parquet_pth = self.savepath + '/raw_parquet/'
+        self.savepath = Path(self.data_pth) / self._datadir_name()
+        self.raw_as_parquet_pth = self.savepath / 'raw_parquet'
         try:
             if not os.path.exists(self.raw_as_parquet_pth):
                 os.makedirs(self.raw_as_parquet_pth)
                 print(f"Directory '{self.raw_as_parquet_pth}' created.")
         except OSError:
             print(f"Creation of the directory '{self.raw_as_parquet_pth}' failed.")
-        self.aux_pth = self.pth_dic['auxillary_files']
-        self.voc_pth = self.pth_dic['vocabulary']
-        self.user_input_pth = self.pth_dic['user_input']
+        self.aux_pth = Path(self.pth_dic['auxillary_files'])
+        self.voc_pth = Path(self.pth_dic['vocabulary'])
+        self.user_input_pth = Path(self.pth_dic['user_input'])
         try:
-            self.source_pth = self.pth_dic[f'{self.dataset}_source_path']
+            self.source_pth = Path(self.pth_dic[f'{self.dataset}_source_path'])
         except KeyError:
             self.source_pth = None
         
-        self.med_file = self.aux_pth + 'medications_v11.json'
-        self.diag_file = self.aux_pth + 'diagnoses.json'
-        self.unittype_file = self.user_input_pth + 'unit_type_v2.json'
-        self.dischargeloc_file = self.user_input_pth + 'discharge_location_v2.json'
-        self.admissionorigin_file = self.user_input_pth + 'admission_origins_v2.json'
-        self.pth_drug_admin_route = self.user_input_pth + 'med_administration_routes.json'
+        self.med_file = self.aux_pth / 'medications_v11.json'
+        self.diag_file = self.aux_pth / 'diagnoses.json'
+        self.unittype_file = self.user_input_pth / 'unit_type_v2.json'
+        self.dischargeloc_file = self.user_input_pth / 'discharge_location_v2.json'
+        self.admissionorigin_file = self.user_input_pth / 'admission_origins_v2.json'
+        self.pth_drug_admin_route = self.user_input_pth / 'med_administration_routes.json'
 
         self.ohdsi_med = self._load_ohdsi_mapping(self.med_file)
         self.ohdsi_diag = self._load_ohdsi_mapping(self.diag_file)
         self.med_concept_id = self._concept_id_mapping(self.ohdsi_med)
         self.diag_concept_id = self._concept_id_mapping(self.ohdsi_diag)
 
-        self.formatted_ts_dir = self.blendedicu_pth + 'formatted_timeseries/'
-        self.formatted_med_dir = self.blendedicu_pth + 'formatted_medications/'
-        self.preprocessed_ts_dir = self.blendedicu_pth + 'preprocessed_timeseries/'
-        self.partiallyprocessed_ts_dir = self.blendedicu_pth + 'partially_processed_timeseries/'
-        self.dir_long_timeseries = self.blendedicu_pth + 'long_timeseries/'
-        self.dir_long_medication = self.blendedicu_pth + 'long_medication/'
+        self.formatted_ts_dir = Path(self.blendedicu_pth) / 'formatted_timeseries'
+        self.formatted_med_dir = Path(self.blendedicu_pth) / 'formatted_medications'
+        self.preprocessed_ts_dir = Path(self.blendedicu_pth) / 'preprocessed_timeseries'
+        self.partiallyprocessed_ts_dir = Path(self.blendedicu_pth) / 'partially_processed_timeseries'
+        self.dir_long_timeseries = Path(self.blendedicu_pth) / 'long_timeseries'
+        self.dir_long_medication = Path(self.blendedicu_pth) / 'long_medication'
 
         self._mkdirs()
 
@@ -94,28 +108,26 @@ class DataProcessor:
         self.diag_mapping = self._label_to_blended_mapping(self.ohdsi_diag)
         self.clipping_quantiles = None
         self.labels = None
-        self.med_savepath = f'{self.savepath}/medication.parquet'
-        self.labels_savepath = f'{self.savepath}/labels.parquet'
-        self.flat_savepath = f'{self.savepath}/flat.parquet'
-        self.diag_savepath = f'{self.savepath}/diagnoses.parquet'
+        self.med_savepath = self.savepath / 'medication.parquet'
+        self.labels_savepath = self.savepath / 'labels.parquet'
+        self.flat_savepath = self.savepath / 'flat.parquet'
+        self.diag_savepath = self.savepath / 'diagnoses.parquet'
 
         
     def _preprocessed_pth(self, dataset, name):
-        return (f'{self.data_pth}/'
-                +self._datadir_name(dataset)
-                +f'preprocessed_{name}.parquet')
+        return Path(self.data_pth) / self._datadir_name(dataset) / f'preprocessed_{name}.parquet'
 
     def _datadir_name(self, dataset=None):
         if dataset is None:
             dataset = self.dataset
-        return f'/{dataset}_data/'
+        return f'{dataset}_data'
         
     def _mkdirs(self):
         for pth in (self.formatted_ts_dir,
                     self.formatted_med_dir,
                     self.preprocessed_ts_dir,
                     self.partiallyprocessed_ts_dir):
-            Path(pth).mkdir(exist_ok=True, parents=True)
+            pth.mkdir(exist_ok=True, parents=True)
 
     def _concat(self, df1, df2):
         return ([df1.copy()] if df2.empty 
@@ -123,7 +135,7 @@ class DataProcessor:
                 else [pd.concat([df1, df2])])
     
     def _get_index_pth(self, ts_dir):
-        return f'{ts_dir}/index.csv'
+        return Path(ts_dir) / 'index.csv'
     
     def build_index(self, ts_dir):
         """
@@ -194,9 +206,10 @@ class DataProcessor:
         return pd.read_parquet(pth, **kwargs)
 
     def scan(self, pth):
-        if Path(pth).is_dir():
-            return pl.scan_parquet(pth+'/*.parquet')
-        return pl.scan_parquet(pth)
+        pth = Path(pth)
+        if pth.is_dir():
+            return pl.scan_parquet(str(pth / '*.parquet'))
+        return pl.scan_parquet(str(pth))
 
     def save(self, df, savepath, pyarrow_schema=None, verbose=True, row_group_size=None):
         """

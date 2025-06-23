@@ -3,8 +3,8 @@ import pandas as pd
 from database_processing.dataprocessor import DataProcessor
 
 class blended_DiagProcessor(DataProcessor):
-    def __init__(self, datasets):
-        super().__init__('blended')
+    def __init__(self, datasets, pth_dic=None, config_path=None):
+        super().__init__('blended', pth_dic=pth_dic, config_path=config_path)
         
         self.datasets = datasets
         self.loadcols = ['uniquepid',

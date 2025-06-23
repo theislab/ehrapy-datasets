@@ -13,15 +13,17 @@ class mimic4TSP(TimeseriesProcessor):
                  med_pth,
                  ts_pth,
                  tslab_pth,
-                 outputevents_pth):
-        super().__init__(dataset='mimic4')
+                 outputevents_pth,
+                 pth_dic=None,
+                 config_path=None):
+        super().__init__(dataset='mimic4', pth_dic=pth_dic, config_path=config_path)
 
 
         self.labels = self.load(self.labels_savepath)
-        self.lf_medication = self.scan(self.savepath+med_pth)
-        self.lf_timeseries = self.scan(self.savepath+ts_pth)
-        self.lf_timeseries_lab = self.scan(self.savepath+tslab_pth)
-        self.lf_outputevents = (self.scan(self.savepath+outputevents_pth)
+        self.lf_medication = self.scan(self.savepath / med_pth)
+        self.lf_timeseries = self.scan(self.savepath / ts_pth)
+        self.lf_timeseries_lab = self.scan(self.savepath / tslab_pth)
+        self.lf_outputevents = (self.scan(self.savepath / outputevents_pth)
                                 .select('stay_id',
                                         'offset',
                                         'value',

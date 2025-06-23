@@ -3,8 +3,8 @@ import pandas as pd
 from database_processing.diagnosesprocessor import DiagnosesProcessor
 
 class mimic4_DiagProcessor(DiagnosesProcessor):
-    def __init__(self):
-        super().__init__(dataset='mimic4')
+    def __init__(self, pth_dic=None, config_path=None):
+        super().__init__(dataset='mimic4', pth_dic=pth_dic, config_path=config_path)
         self.diagnoses = self.load(self.diag_savepath)
         
     def run(self):

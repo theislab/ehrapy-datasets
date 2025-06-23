@@ -9,8 +9,8 @@ from database_processing.dataprocessor import DataProcessor
 
 
 class DataPreparator(DataProcessor):
-    def __init__(self, dataset, col_stayid):
-        super().__init__(dataset)
+    def __init__(self, dataset, col_stayid, pth_dic=None, config_path=None):
+        super().__init__(dataset, pth_dic, config_path)
         self.col_stayid = col_stayid
 
         self.chunksize = 10_000_000  # chunksize in csv reader

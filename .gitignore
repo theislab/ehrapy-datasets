@@ -139,4 +139,10 @@ dmypy.json
 *.names
 *.xls
 *.rar
+*.parquet
 thyroid/thyroid_data
+
+# BlendedICU
+BlendedICU/data/
+BlendedICU/source/
+BlendedICU/auxillary_files/OMOP_vocabulary/

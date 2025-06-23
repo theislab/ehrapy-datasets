@@ -1,6 +1,8 @@
 from pathlib import Path
+from typing import Optional
 
 import polars as pl
+import pandas as pd
 
 from database_processing.datapreparator import DataPreparator
 from database_processing.newmedicationprocessor import NewMedicationProcessor
@@ -18,36 +20,44 @@ class mimic4Preparator(DataPreparator):
                  inputevents_pth,
                  outputevents_pth,
                  icustays_pth,
-                 patients_pth):
+                 patients_pth,
+                 pth_dic=None,
+                 config_path=None):
         
-        super().__init__(dataset='mimic4', col_stayid='stay_id')
-        self.chartevents_pth = self.source_pth + chartevents_pth
-        self.labevents_pth = self.source_pth + labevents_pth
-        self.d_labitems_pth = self.source_pth + d_labitems_pth
-        self.diagnoses_pth = self.source_pth + diagnoses_pth
-        self.admissions_pth = self.source_pth + admissions_pth
-        self.d_diagnoses_pth = self.source_pth + d_diagnoses_pth
-        self.d_items_pth = self.source_pth + d_items_pth
-        self.outputevents_pth = self.source_pth + outputevents_pth
-        self.icustays_pth = self.source_pth + icustays_pth
-        self.patients_pth = self.source_pth + patients_pth
-        self.inputevents_pth = self.source_pth + inputevents_pth
+        super().__init__(dataset='mimic4', col_stayid='stay_id', pth_dic=pth_dic, config_path=config_path)
+        
+        # Initialize attributes that will be set later
+        self.icustays: Optional[pd.DataFrame] = None
+        self.heights_weights: Optional[pl.LazyFrame] = None
+        
+        self.config_path = config_path
+        self.chartevents_pth = self.source_pth / chartevents_pth
+        self.labevents_pth = self.source_pth / labevents_pth
+        self.d_labitems_pth = self.source_pth / d_labitems_pth
+        self.diagnoses_pth = self.source_pth / diagnoses_pth
+        self.admissions_pth = self.source_pth / admissions_pth
+        self.d_diagnoses_pth = self.source_pth / d_diagnoses_pth
+        self.d_items_pth = self.source_pth / d_items_pth
+        self.outputevents_pth = self.source_pth / outputevents_pth
+        self.icustays_pth = self.source_pth / icustays_pth
+        self.patients_pth = self.source_pth / patients_pth
+        self.inputevents_pth = self.source_pth / inputevents_pth
 
-        self.diagnoses_parquet_pth = self.raw_as_parquet_pth + self._get_name_as_parquet(diagnoses_pth)
-        self.outputevents_parquet_pth = self.raw_as_parquet_pth + self._get_name_as_parquet(outputevents_pth)
-        self.admissions_parquet_pth = self.raw_as_parquet_pth + self._get_name_as_parquet(admissions_pth)
-        self.inputevents_parquet_pth = self.raw_as_parquet_pth + self._get_name_as_parquet(inputevents_pth)
-        self.icustays_parquet_pth = self.raw_as_parquet_pth + self._get_name_as_parquet(icustays_pth)
-        self.patients_parquet_pth = self.raw_as_parquet_pth + self._get_name_as_parquet(patients_pth)
-        self.d_items_parquet_pth = self.raw_as_parquet_pth + self._get_name_as_parquet(d_items_pth)
-        self.d_labitems_parquet_pth = self.raw_as_parquet_pth + self._get_name_as_parquet(d_labitems_pth)
-        self.d_diagnoses_parquet_pth = self.raw_as_parquet_pth + self._get_name_as_parquet(d_diagnoses_pth)
-        self.labevents_parquet_pth = self.raw_as_parquet_pth + self._get_name_as_parquet(labevents_pth)
-        self.chartevents_parquet_pth = self.raw_as_parquet_pth + self._get_name_as_parquet(chartevents_pth)
+        self.diagnoses_parquet_pth = Path(self.raw_as_parquet_pth) / self._get_name_as_parquet(diagnoses_pth)
+        self.outputevents_parquet_pth = Path(self.raw_as_parquet_pth) / self._get_name_as_parquet(outputevents_pth)
+        self.admissions_parquet_pth = Path(self.raw_as_parquet_pth) / self._get_name_as_parquet(admissions_pth)
+        self.inputevents_parquet_pth = Path(self.raw_as_parquet_pth) / self._get_name_as_parquet(inputevents_pth)
+        self.icustays_parquet_pth = Path(self.raw_as_parquet_pth) / self._get_name_as_parquet(icustays_pth)
+        self.patients_parquet_pth = Path(self.raw_as_parquet_pth) / self._get_name_as_parquet(patients_pth)
+        self.d_items_parquet_pth = Path(self.raw_as_parquet_pth) / self._get_name_as_parquet(d_items_pth)
+        self.d_labitems_parquet_pth = Path(self.raw_as_parquet_pth) / self._get_name_as_parquet(d_labitems_pth)
+        self.d_diagnoses_parquet_pth = Path(self.raw_as_parquet_pth) / self._get_name_as_parquet(d_diagnoses_pth)
+        self.labevents_parquet_pth = Path(self.raw_as_parquet_pth) / self._get_name_as_parquet(labevents_pth)
+        self.chartevents_parquet_pth = Path(self.raw_as_parquet_pth) / self._get_name_as_parquet(chartevents_pth)
 
-        self.outputevents_savepath = self.savepath + 'timeseriesoutputs.parquet'
-        self.lab_savepath = self.savepath + 'timeserieslab.parquet'
-        self.ts_savepath = self.savepath + 'timeseries.parquet'
+        self.outputevents_savepath = Path(self.savepath) / 'timeseriesoutputs.parquet'
+        self.lab_savepath = Path(self.savepath) / 'timeserieslab.parquet'
+        self.ts_savepath = Path(self.savepath) / 'timeseries.parquet'
         
         self.col_los = 'los'
 
@@ -71,7 +81,7 @@ class mimic4Preparator(DataPreparator):
                 self.labevents_pth,
                 self.chartevents_pth,
                 ]):
-            tgt = self.raw_as_parquet_pth + self._get_name_as_parquet(src_pth)
+            tgt = self.raw_as_parquet_pth / self._get_name_as_parquet(src_pth)
             if Path(tgt).is_file() and i==0:
                 inp = input('Some parquet files already exist, skip conversion to parquet ?[n], y')
                 if inp.lower() == 'y':
@@ -136,7 +146,7 @@ class mimic4Preparator(DataPreparator):
                 .cast({'itemid': pl.String})
                 .drop('measuretime', 'intime')
                 
-                .collect(streaming=True)
+                .collect()
                 .pivot(index=['stay_id', 'charttime'], columns='itemid', values='valuenum')
                 .rename({str(v): k for k, v in itemids.items()})
                 .with_columns(
@@ -272,7 +282,9 @@ class mimic4Preparator(DataPreparator):
                                           col_route=None,
                                           col_admittime='intime',
                                           offset_calc=True,
-                                          dose_unit_conversion_dic=dose_unit_conversions
+                                          dose_unit_conversion_dic=dose_unit_conversions,
+                                          pth_dic=self.pth_dic,
+                                          config_path=self.config_path
                                         )
         med = self.nmp.run()
         self.save(med, self.med_savepath)
@@ -342,7 +354,7 @@ class mimic4Preparator(DataPreparator):
 
         keepvars = self._lab_keepvars()
 
-        keepitemids = dlabitems.filter(pl.col('label').is_in(keepvars)).select('itemid').collect()
+        keepitemids = dlabitems.filter(pl.col('label').is_in(keepvars)).select('itemid').collect().to_numpy().flatten()
 
         self.df_lab = (labevents
                        .select('hadm_id', 'itemid', 'charttime', 'valuenum')
@@ -400,7 +412,7 @@ class mimic4Preparator(DataPreparator):
                    unit_los='day')
              .join(ditems.select('itemid', 'label'), on='itemid')
              .drop('itemid')
-             .collect(streaming=True))
+             .collect())
         
         self.save(ts, self.ts_savepath)
 

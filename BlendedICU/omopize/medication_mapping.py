@@ -8,14 +8,14 @@ import pandas as pd
 class meds:
     def __init__(self, pth_dic, name='omop'):
         self.pth_dic = pth_dic
-        self.aux_pth = pth_dic['auxillary_files']
-        self.user_input_pth = pth_dic['user_input']
-        self.med_mapping_pth = pth_dic['medication_mapping_files']
+        self.aux_pth = Path(pth_dic['auxillary_files'])
+        self.user_input_pth = Path(pth_dic['user_input'])
+        self.med_mapping_pth = Path(pth_dic['medication_mapping_files'])
         self.source_name = name + '_source_path'
         if self.source_name in pth_dic:
-            self.datadir = pth_dic[self.source_name]
+            self.datadir = Path(pth_dic[self.source_name])
         self.name = name
-        self.savepath = f'{self.med_mapping_pth}{self.name}_medications.csv'
+        self.savepath = self.med_mapping_pth / f'{self.name}_medications.csv'
 
     def save(self, meds):
         print(f'   ---> Saving {self.savepath}')
@@ -28,10 +28,10 @@ class Eicu_meds(meds):
         
     def get(self):
         print('\n\neICU\n===========\n')
-        patients_pth = self.datadir+'patient.csv.gz'
-        eicu_admissiondrug_pth = self.datadir+'admissionDrug.csv.gz'
-        eicu_infusiondrug_pth = self.datadir+'infusionDrug.csv.gz'
-        eicu_medication_pth = self.datadir+'medication.csv.gz'
+        patients_pth = self.datadir/'patient.csv.gz'
+        eicu_admissiondrug_pth = self.datadir/'admissionDrug.csv.gz'
+        eicu_infusiondrug_pth = self.datadir/'infusionDrug.csv.gz'
+        eicu_medication_pth = self.datadir/'medication.csv.gz'
 
         eicu_infusion = pd.read_csv(eicu_infusiondrug_pth)
         eicu_admission = pd.read_csv(eicu_admissiondrug_pth)
@@ -71,11 +71,11 @@ class Eicu_meds(meds):
 class Hirid_meds(meds):
     def __init__(self, pth):
         super().__init__(pth, name='hirid')
-        self._admissions_untar_path = self.datadir + '/reference_data/'
-        self.admissions_path = self._admissions_untar_path + 'general_table.csv'
-        self.imputedstage_path = self.datadir + 'imputed_stage/parquet/'
-        self.ts_path = self.datadir + 'observation_tables/parquet/'
-        self.med_path = self.datadir + 'pharma_records/parquet/'
+        self._admissions_untar_path = self.datadir / 'reference_data/'
+        self.admissions_path = self._admissions_untar_path / 'general_table.csv'
+        self.imputedstage_path = self.datadir / 'imputed_stage/parquet/'
+        self.ts_path = self.datadir / 'observation_tables/parquet/'
+        self.med_path = self.datadir / 'pharma_records/parquet/'
         
         self._untar_files()
         
@@ -84,10 +84,10 @@ class Hirid_meds(meds):
         Uncompresses source files. Only proceeds if uncompressed files are not 
         found.
         """
-        ts_tar_path = self.datadir + 'raw_stage/observation_tables_parquet.tar.gz'
-        admissions_tar_path = self.datadir + 'reference_data.tar.gz'
-        pharma_tar_path = self.datadir + 'raw_stage/pharma_records_parquet.tar.gz'
-        imputedstage_tar_path = self.datadir + 'imputed_stage/imputed_stage_parquet.tar.gz'
+        ts_tar_path = self.datadir / 'raw_stage/observation_tables_parquet.tar.gz'
+        admissions_tar_path = self.datadir / 'reference_data.tar.gz'
+        pharma_tar_path = self.datadir / 'raw_stage/pharma_records_parquet.tar.gz'
+        imputedstage_tar_path = self.datadir / 'imputed_stage/imputed_stage_parquet.tar.gz'
         
         files = {
             self.admissions_path: (admissions_tar_path, self._admissions_untar_path),
@@ -118,7 +118,7 @@ class Hirid_meds(meds):
         return hirid_patient
 
     def _load_hirid_pharmanames(self):
-        hirid_pharmaname_pth = self.datadir+'hirid_variable_reference_v1.csv'
+        hirid_pharmaname_pth = self.datadir/'hirid_variable_reference_v1.csv'
         hirid_pharmaname = pd.read_csv(hirid_pharmaname_pth,
                                        sep=';',
                                        encoding='unicode_escape',
@@ -172,8 +172,8 @@ class Amsterdam_meds(meds):
 
     def get(self):
         print('\n\nAmsterdam\n===========\n')
-        pth_drugs = self.datadir+'drugitems.csv.gz'
-        pth_patients = self.datadir+'admissions.csv.gz'
+        pth_drugs = self.datadir/'drugitems.csv.gz'
+        pth_patients = self.datadir/'admissions.csv.gz'
 
         admissions = pd.read_csv(pth_patients,
                                  compression='gzip',
@@ -210,15 +210,15 @@ class Mimic4_meds(meds):
 
     def _load_inputevents(self):
         print('Loading inputevents')
-        pth_meds = self.datadir+'icu/inputevents.csv.gz'
+        pth_meds = self.datadir/'icu/inputevents.csv.gz'
         meds = pd.read_csv(pth_meds, usecols=['stay_id', 'itemid'])
         return meds
 
     def get(self):
         print('\n\nMIMIC-IV\n===========\n')
         
-        pth_d_items = self.datadir+'icu/d_items.csv.gz'
-        pth_patients = self.datadir+'icu/icustays.csv.gz'
+        pth_d_items = self.datadir/'icu/d_items.csv.gz'
+        pth_patients = self.datadir/'icu/icustays.csv.gz'
         
         meds = self._load_inputevents()
         patients = pd.read_csv(pth_patients, usecols=['stay_id'])
@@ -259,10 +259,10 @@ class Mimic3_meds(meds):
         
     def get(self):
         print('\n\nMIMIC-III\n===========\n')
-        pth_meds_cv = self.datadir+'INPUTEVENTS_CV.csv.gz'
-        pth_meds_mv = self.datadir+'INPUTEVENTS_MV.csv.gz'
-        pth_d_items = self.datadir+'D_ITEMS.csv.gz'
-        pth_patients = self.datadir+'ICUSTAYS.csv.gz'
+        pth_meds_cv = self.datadir/'INPUTEVENTS_CV.csv.gz'
+        pth_meds_mv = self.datadir/'INPUTEVENTS_MV.csv.gz'
+        pth_d_items = self.datadir/'D_ITEMS.csv.gz'
+        pth_patients = self.datadir/'ICUSTAYS.csv.gz'
 
         patients = pd.read_csv(pth_patients, usecols=['ICUSTAY_ID'])
         meds_cv = pd.read_csv(pth_meds_cv, usecols=['ICUSTAY_ID', 'ITEMID'])
@@ -313,8 +313,8 @@ class MedicationMapping(meds):
                            'mimic4',
                            'mimic3']):
         super().__init__(pth_dic)
-        pth_ohdsi = self.med_mapping_pth+'ohdsi_icu_medications.csv'
-        pth_manual = self.user_input_pth+'manual_icu_meds.csv'
+        pth_ohdsi = self.med_mapping_pth/'ohdsi_icu_medications.csv'
+        pth_manual = self.user_input_pth/'manual_icu_meds.csv'
         self.ohdsi = pd.read_csv(pth_ohdsi, sep=';')
         self.manual_addings = pd.read_csv(pth_manual, sep=';')
         self.drug_mapping = pd.concat([self.ohdsi, self.manual_addings])
@@ -343,14 +343,14 @@ class MedicationMapping(meds):
             meds.append(loader.get())
             
         df = pd.concat(meds)
-        df.to_parquet(self.med_mapping_pth+'drugnames.parquet')
+        df.to_parquet(self.med_mapping_pth/'drugnames.parquet')
         return df
 
     def run(self, load_drugnames=True, fname='medications.json'):
         
-        self.med_cids = pd.read_parquet(self.med_mapping_pth+'med_concept_ids.parquet')
+        self.med_cids = pd.read_parquet(self.med_mapping_pth/'med_concept_ids.parquet')
 
-        self.drugs = (pd.read_parquet(self.med_mapping_pth+'drugnames.parquet')
+        self.drugs = (pd.read_parquet(self.med_mapping_pth/'drugnames.parquet')
                       if load_drugnames
                       else self._get_drugnames())
 
@@ -393,7 +393,7 @@ class MedicationMapping(meds):
             medications_json[name]['blended'] = self.concept_id
         
         json.dump(medications_json,
-                  open(self.aux_pth+fname, 'w'),
+                  open(self.aux_pth/fname, 'w'),
                   indent=4,
                   ensure_ascii=False)
 

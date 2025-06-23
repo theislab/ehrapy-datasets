@@ -2,8 +2,8 @@ from database_processing.flatandlabelsprocessor import FlatAndLabelsProcessor
 
 
 class mimic4_FLProcessor(FlatAndLabelsProcessor):
-    def __init__(self):
-        super().__init__(dataset='mimic4')
+    def __init__(self, pth_dic=None, config_path=None):
+        super().__init__(dataset='mimic4', pth_dic=pth_dic, config_path=config_path)
         self.flat = self.load(self.flat_savepath)
         self.labels = self.load(self.labels_savepath)
 

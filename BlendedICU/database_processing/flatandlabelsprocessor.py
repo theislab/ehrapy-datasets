@@ -1,5 +1,6 @@
 import pandas as pd
 import polars as pl
+from pathlib import Path
 
 from database_processing.dataprocessor import DataProcessor
 
@@ -99,7 +100,7 @@ class FlatAndLabelsProcessor(DataProcessor):
             self.labels = self._reindexing(self.labels)
         
         print(f'number of admissions after preprocessing : {len(self.labels)}')
-        self.save(self.labels, f'{self.savepath}preprocessed_labels.parquet')
+        self.save(self.labels, self.savepath / 'preprocessed_labels.parquet')
         return self.labels
         
     def run_flat_and_labels(self):        
@@ -111,7 +112,7 @@ class FlatAndLabelsProcessor(DataProcessor):
             self.labels = self._reindexing(self.labels)
 
         print(f'number of admissions after preprocessing : {len(self.labels)}')
-        self.save(self.flat, f'{self.savepath}preprocessed_flat.parquet')
-        self.save(self.labels, f'{self.savepath}preprocessed_labels.parquet')
+        self.save(self.flat, self.savepath / 'preprocessed_flat.parquet')
+        self.save(self.labels, self.savepath / 'preprocessed_labels.parquet')
         return self.flat, self.labels
     
