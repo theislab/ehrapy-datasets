@@ -1,8 +1,6 @@
 from pathlib import Path
-from typing import Optional
 
 import polars as pl
-import pandas as pd
 
 from database_processing.datapreparator import DataPreparator
 from database_processing.newmedicationprocessor import NewMedicationProcessor

@@ -7,7 +7,7 @@ from database_processing.timeseriesprocessor import TimeseriesProcessor
 
 
 class blendedicuTSP(TimeseriesProcessor):
-    def __init__(self, compute_index=False):
+    def __init__(self, compute_index=False, pth_dic=None, config_path=None):
         '''
         Use compute_index=True if timeseries files may have changed location,
         or have been deleted or created between the 2_{dataset} step and the
@@ -15,7 +15,7 @@ class blendedicuTSP(TimeseriesProcessor):
         if compute_index is False, index files from each directory in 
         partially_processed_timeseries will be read and concatenated.
         '''
-        super().__init__(dataset='blended')
+        super().__init__(dataset='blended', pth_dic=pth_dic, config_path=config_path)
         self.partiallyprocessed_ts_dir
         #self.ts_pths = self.get_ts_pths(self.partiallyprocessed_ts_dir,
         #                                 compute_index)

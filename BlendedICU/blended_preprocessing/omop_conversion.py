@@ -15,9 +15,11 @@ class OMOP_converter(blendedicuTSP):
     def __init__(self,
                  initialize_tables=False,
                  ts_pths=None,
-                 med_pths=None):
+                 med_pths=None,
+                 pth_dic=None,
+                 config_path=None):
         
-        super().__init__()
+        super().__init__(pth_dic=pth_dic, config_path=config_path)
         self.schemas = cdm.schemas
         self.tables_initialized = False
         self.data_pth = self.savepath
@@ -27,14 +29,14 @@ class OMOP_converter(blendedicuTSP):
         self.adm_measuredat = self.flat_hr_from_adm.total_seconds()
         self.admission_data_datetime = (self.ref_date + pd.Timedelta(self.adm_measuredat, unit='second'))
         self.omop_concept = self._get_omop_concept()
-        self.savedir = f'{self.data_pth}/OMOP-CDM/'
-        Path(self.savedir).mkdir(exist_ok=True)
+        self.savedir = self.data_pth / 'OMOP-CDM'
+        self.savedir.mkdir(exist_ok=True, parents=True)
         
         self.labels = self._load_labels()
         self.diagnoses = self._load_diagnoses()
                 
-        self.lf_ts = pl.scan_parquet(self.dir_long_timeseries+'*.parquet')
-        self.lf_med = pl.scan_parquet(self.dir_long_medication+'*.parquet')
+        self.lf_ts = pl.scan_parquet(str(self.dir_long_timeseries / '*.parquet'))
+        self.lf_med = pl.scan_parquet(str(self.dir_long_medication / '*.parquet'))
         
         self.visit_concept_ids = {
             'emergency': 9203,  # Visit
@@ -111,7 +113,7 @@ class OMOP_converter(blendedicuTSP):
         self.tables_initialized = True
         
     def _get_omop_concept(self):
-        pth_concept_table = fr'{self.aux_pth}OMOP_vocabulary/CONCEPT.parquet'
+        pth_concept_table = self.aux_pth / 'OMOP_vocabulary' / 'CONCEPT.parquet'
         return pd.read_parquet(pth_concept_table,
                                columns=['concept_name',
                                         'concept_code',
@@ -227,7 +229,7 @@ class OMOP_converter(blendedicuTSP):
         
         self.person = person
         
-        self.save(pl.from_pandas(self.person), self.savedir+'PERSON.parquet')
+        self.save(pl.from_pandas(self.person), self.savedir / 'PERSON.parquet')
         
     def visit_occurrence_table(self):
         print('Visit Occurrence...')
@@ -303,7 +305,7 @@ class OMOP_converter(blendedicuTSP):
                       'value': 'value_as_number'}))
         
         lf = pl.concat([lf, pl.LazyFrame(schema=self.schemas['measurement'])])
-        self.save(lf, self.savedir+'/MEASUREMENT.parquet')
+        self.save(lf, self.savedir / 'MEASUREMENT.parquet')
 
 
     def _add_observation(self, breaks, column, concept_id, unit_concept_id):
@@ -350,11 +352,19 @@ class OMOP_converter(blendedicuTSP):
         
         obs = pl.from_pandas(self.observation).with_columns(self._hash('observation_id'))
 
-        self.save(obs, self.savedir+'OBSERVATION.parquet')
+        self.save(obs, self.savedir / 'OBSERVATION.parquet')
 
     @staticmethod
     def _hash(alias):
-        return pl.concat_str(pl.all().replace(None, ''), separator='|').hash().reinterpret(signed=True).abs().alias(alias)
+        # hash function for polars. polars uses int64 for hashing, needs to be int32 for omop format, -> modulo.
+        return (
+            pl.concat_str(pl.all().replace(None, ''), separator='|')
+            .hash()
+            .abs()
+            .mod(2_147_483_647)
+            .cast(pl.Int32)
+            .alias(alias)
+        )
 
     def drug_exposure_table(self):
         raise UserWarning('dosage is not fully omop-ized, it is advised to check the data carefully before using.')
@@ -405,7 +415,7 @@ class OMOP_converter(blendedicuTSP):
             )
             )
 
-        self.save(df, self.savedir+'/DRUG_EXPOSURE.parquet')
+        self.save(df, self.savedir / 'DRUG_EXPOSURE.parquet')
         
         self.drug_strength_table()
         
@@ -449,7 +459,7 @@ class OMOP_converter(blendedicuTSP):
                   self.hash('observation_period_id'),
                   )
               )
-        self.save(lf, self.savedir+'/OBSERVATION_PERIOD.parquet')
+        self.save(lf, self.savedir / 'OBSERVATION_PERIOD.parquet')
         
 
     def domain_table(self):
@@ -467,7 +477,7 @@ class OMOP_converter(blendedicuTSP):
         
         self.mapping_domain_id = df_domain.select('domain_name', 'domain_id').to_pandas().set_index('domain_name').domain_id.to_dict()
         
-        self.save(df_domain, self.savedir+'DOMAIN.parquet')
+        self.save(df_domain, self.savedir / 'DOMAIN.parquet')
         
         return df_domain
         
@@ -532,7 +542,7 @@ class OMOP_converter(blendedicuTSP):
         try:
             lf = self.drug_strength_units
         except AttributeError: 
-            lf = (pl.scan_parquet( self.savedir+'/DRUG_EXPOSURE.parquet')
+            lf = (pl.scan_parquet( self.savedir / 'DRUG_EXPOSURE.parquet')
                   .group_by('drug_concept_id').agg(pl.col('_most_common_unit').first()))
         
         lf = (self.drug_strength_units
@@ -544,7 +554,7 @@ class OMOP_converter(blendedicuTSP):
         
         lf = pl.concat([lf, lf_schema], how='align')
         
-        self.save(lf, self.savedir+'/DRUG_STRENGTH.parquet')
+        self.save(lf, self.savedir / 'DRUG_STRENGTH.parquet')
         
     def location_table(self):
         '''
@@ -625,10 +635,10 @@ class OMOP_converter(blendedicuTSP):
                                  .location_id
                                  .to_dict())
 
-        self.save(self.location, self.savedir+'LOCATION.parquet')
+        self.save(self.location, self.savedir / 'LOCATION.parquet')
 
     def _load_labels(self):
-        labels_pth = self.data_pth+'preprocessed_labels.parquet'
+        labels_pth = self.data_pth / 'preprocessed_labels.parquet'
         df = pd.read_parquet(labels_pth).reset_index()
         return df
     
@@ -676,10 +686,10 @@ class OMOP_converter(blendedicuTSP):
         schema = self.schemas[name.lower()]
 
         if chunkindex is None:
-            savepath = f'{self.savedir}/{name}.parquet'
+            savepath = self.savedir / f'{name}.parquet'
         else:
-            savepath = f'{self.savedir}/{name}/{name}_{chunkindex}.parquet'
-            Path(savepath).parent.mkdir(exist_ok=True, parents=True)
+            savepath = self.savedir / name / f'{name}_{chunkindex}.parquet'
+            savepath.parent.mkdir(exist_ok=True, parents=True)
         print(f'Saving {savepath}')
         table.to_parquet(savepath, schema=schema)
 

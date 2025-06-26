@@ -9,12 +9,12 @@ class hiridTSP(TimeseriesProcessor):
     """
     def __init__(self, ts, pharma):
         super().__init__(dataset='hirid')
-        self.lf_ts = (self.scan(self.savepath+ts)
+        self.lf_ts = (self.scan(self.savepath / ts)
                       .select('admissionid',
                               'variable',
                               'value',
                               self.col_offset))
-        self.lf_med = self.scan(self.savepath+pharma)
+        self.lf_med = self.scan(self.savepath / pharma)
 
         self.med_colnames = {'col_id': 'admissionid',
                              'col_var': 'label'}

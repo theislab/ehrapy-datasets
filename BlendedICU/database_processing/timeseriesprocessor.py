@@ -69,8 +69,8 @@ class TimeseriesProcessor(DataProcessor):
         self.cols_minmax = self._get_cols_minmax()
         self.pyarrow_schema_dict = self._pyarrow_schema_dict()
         self.column_template = self._column_template()
-        self.pth_long_timeseries = self.dir_long_timeseries / f'{self.dataset}.parquet'
-        self.pth_long_medication = self.dir_long_medication / f'{self.dataset}.parquet'
+        self.pth_long_timeseries = self.dir_long_timeseries / f"{self.dataset}.parquet"
+        self.pth_long_medication = self.dir_long_medication / f"{self.dataset}.parquet"
         
         self.expr_dict = {
             'amsterdam': self._harm_expressions_amsterdam(),
@@ -215,7 +215,7 @@ class TimeseriesProcessor(DataProcessor):
         med = (med
                .pipe(self.add_prefixed_pid)
                )
-        med_savepath = self.formatted_med_dir / f'{self.dataset}.parquet'
+        med_savepath = self.formatted_med_dir / f"{self.dataset}.parquet"
         self.save(med, med_savepath)
         return med
     
@@ -308,11 +308,11 @@ class TimeseriesProcessor(DataProcessor):
                   )
 
         if chunk_number is None:
-            ts_savepath = self.formatted_ts_dir / f'{self.dataset}.parquet'
+            ts_savepath = self.formatted_ts_dir + self.dataset + ".parquet"
         else :
             print('Collecting...')
             df_ts = df_ts.collect(streaming=True)
-            ts_savepath = self.formatted_ts_dir / f'{self.dataset}_{chunk_number}.parquet'
+            ts_savepath = self.formatted_ts_dir + self.dataset + f"_{chunk_number}.parquet"
             
         self.save(df_ts, ts_savepath)
         return df_ts

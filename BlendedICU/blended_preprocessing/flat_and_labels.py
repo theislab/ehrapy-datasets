@@ -12,8 +12,8 @@ def _take_sample(df, size, groupcol='source_dataset'):
 
 
 class blended_FLProcessor(FlatAndLabelsProcessor):
-    def __init__(self, datasets, size=None, pth_dic=None, config_path=None):
-        super().__init__(dataset='blended', datasets=datasets, pth_dic=pth_dic, config_path=config_path)
+    def __init__(self, datasets, size=None, **kwargs):
+        super().__init__(dataset='blended', datasets=datasets, **kwargs)
         self.size = size
         self.datasets = datasets
         self.labels = self._load_labels()

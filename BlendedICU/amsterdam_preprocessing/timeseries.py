@@ -10,11 +10,11 @@ class amsterdamTSP(TimeseriesProcessor):
     """
     def __init__(self, ts_pth, listitems_pth, gcs_scores_pth):
         super().__init__(dataset='amsterdam')
-        self.lf_ts = self.scan(self.savepath+ts_pth)
-        self.lf_listitems = self.scan(self.savepath+listitems_pth)
+        self.lf_ts = self.scan(self.savepath / ts_pth)
+        self.lf_listitems = self.scan(self.savepath / listitems_pth)
         self.lf_medication = self.scan(self.med_savepath)
 
-        self.gcs_scores = self.scan(self.savepath+gcs_scores_pth)
+        self.gcs_scores = self.scan(self.savepath / gcs_scores_pth)
         
         self.colnames_med = {
             'col_id': 'admissionid',

@@ -100,7 +100,7 @@ class FlatAndLabelsProcessor(DataProcessor):
             self.labels = self._reindexing(self.labels)
         
         print(f'number of admissions after preprocessing : {len(self.labels)}')
-        self.save(self.labels, self.savepath / 'preprocessed_labels.parquet')
+        self.save(self.labels, f'{self.savepath}preprocessed_labels.parquet')
         return self.labels
         
     def run_flat_and_labels(self):        
@@ -110,9 +110,30 @@ class FlatAndLabelsProcessor(DataProcessor):
         if self.dataset != 'blended':
             self.flat = self._reindexing(self.flat)
             self.labels = self._reindexing(self.labels)
+            flat_savepath = self.savepath / 'preprocessed_flat.parquet'
+            labels_savepath = self.savepath / 'preprocessed_labels.parquet'
+        else:
+            # For blended, always save to blended_data
+            data_dir = Path(self.pth_dic["data_dir"])
+            blended_dir = data_dir / 'blended_data'
+            blended_dir.mkdir(exist_ok=True, parents=True)
+            flat_savepath = blended_dir / 'preprocessed_flat.parquet'
+            labels_savepath = blended_dir / 'preprocessed_labels.parquet'
 
         print(f'number of admissions after preprocessing : {len(self.labels)}')
-        self.save(self.flat, self.savepath / 'preprocessed_flat.parquet')
-        self.save(self.labels, self.savepath / 'preprocessed_labels.parquet')
+        self.save(self.flat, flat_savepath)
+        self.save(self.labels, labels_savepath)
         return self.flat, self.labels
+    
+    @staticmethod
+    def _hash(alias):
+        # hash function for polars. polars uses int64 for hashing, needs to be int32 for omop format, -> modulo.
+        return (
+            pl.concat_str(pl.all().replace(None, ''), separator='|')
+            .hash()
+            .abs()
+            .mod(2_147_483_647)
+            .cast(pl.Int32)
+            .alias(alias)
+        )
     

@@ -22,12 +22,12 @@ class eicuTSP(TimeseriesProcessor):
         self.lf_med = self.scan(self.med_savepath)
         self.labels = self.scan(self.labels_savepath)
         self.flat = self.scan(self.flat_savepath).collect().to_pandas()
-        self.lf_tslab = self.scan(self.savepath+lab_pth)
-        self.lf_tsresp = self.scan(self.savepath+resp_pth)
-        self.lf_tsnurse = self.scan(self.savepath+nurse_pth)
-        self.lf_tsaperiodic = self.scan(self.savepath+aperiodic_pth)
-        self.lf_tsperiodic = self.scan(self.savepath+periodic_pth)
-        self.lf_tsinout = self.scan(self.savepath+inout_pth)
+        self.lf_tslab = self.scan(self.savepath / lab_pth)
+        self.lf_tsresp = self.scan(self.savepath / resp_pth)
+        self.lf_tsnurse = self.scan(self.savepath / nurse_pth)
+        self.lf_tsaperiodic = self.scan(self.savepath / aperiodic_pth)
+        self.lf_tsperiodic = self.scan(self.savepath / periodic_pth)
+        self.lf_tsinout = self.scan(self.savepath / inout_pth)
 
         self.colnames_lab = {
             'col_id': 'patientunitstayid',
