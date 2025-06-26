@@ -146,3 +146,4 @@ thyroid/thyroid_data
 BlendedICU/data/
 BlendedICU/source/
 BlendedICU/auxillary_files/OMOP_vocabulary/
+BlendedICU/auxillary_files/medications.json
