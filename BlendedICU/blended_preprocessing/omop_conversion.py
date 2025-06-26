@@ -294,7 +294,7 @@ class OMOP_converter(blendedicuTSP):
         
         lf = ( self.lf_ts
                 .with_columns(
-                    self.hash('measurement_id'),
+                    self._hash('measurement_id'),
                     pl.col('patient').replace(mapping_person_id, default=0).alias('person_id'),
                     pl.col('patient').replace(mapping_visit_id, default=0).alias('visit_occurrence_id'),
                     pl.col('variable').replace(mapping_concept_id, default=0).alias('measurement_concept_id'),
@@ -356,18 +356,10 @@ class OMOP_converter(blendedicuTSP):
 
     @staticmethod
     def _hash(alias):
-        # hash function for polars. polars uses int64 for hashing, needs to be int32 for omop format, -> modulo.
-        return (
-            pl.concat_str(pl.all().replace(None, ''), separator='|')
-            .hash()
-            .abs()
-            .mod(2_147_483_647)
-            .cast(pl.Int32)
-            .alias(alias)
-        )
+        return pl.concat_str(pl.all().replace(None, ''), separator='|').hash().reinterpret(signed=True).abs().alias(alias)
 
     def drug_exposure_table(self):
-        raise UserWarning('dosage is not fully omop-ized, it is advised to check the data carefully before using.')
+        warnings.warn('dosage is not fully omop-ized, it is advised to check the data carefully before using.', UserWarning)
         if not self.tables_initialized:
             self._initialize_tables()
 
@@ -386,7 +378,7 @@ class OMOP_converter(blendedicuTSP):
                   col_expr
                   )
               .with_columns(
-                  self.hash('drug_exposure_id'),
+                  self._hash('drug_exposure_id'),
                   pl.col('patient').replace(mapping_person_id, default=None).cast(pl.Int64).alias('person_id'),
                   pl.col('patient').replace(mapping_visit_id, default=None).alias('visit_concept_id'),
                   pl.col('variable').replace(mapping_concept_id, default=0).cast(pl.Int32).alias('drug_concept_id'),
@@ -456,7 +448,7 @@ class OMOP_converter(blendedicuTSP):
                    pl.max("time").alias('observation_period_end_date'))
               .with_columns(
                   pl.lit(32817).alias('period_type_concept_id'),
-                  self.hash('observation_period_id'),
+                  self._hash('observation_period_id'),
                   )
               )
         self.save(lf, self.savedir / 'OBSERVATION_PERIOD.parquet')

@@ -125,15 +125,3 @@ class FlatAndLabelsProcessor(DataProcessor):
         self.save(self.labels, labels_savepath)
         return self.flat, self.labels
     
-    @staticmethod
-    def _hash(alias):
-        # hash function for polars. polars uses int64 for hashing, needs to be int32 for omop format, -> modulo.
-        return (
-            pl.concat_str(pl.all().replace(None, ''), separator='|')
-            .hash()
-            .abs()
-            .mod(2_147_483_647)
-            .cast(pl.Int32)
-            .alias(alias)
-        )
-    
