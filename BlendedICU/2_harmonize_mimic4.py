@@ -7,12 +7,12 @@ Approximate running time: <1min.
 """
 import argparse
 from pathlib import Path
+from lamin_utils import logger
 
 from mimic4_preprocessing.flat_and_labels import mimic4_FLProcessor
 from mimic4_preprocessing.diagnoses import mimic4_DiagProcessor
 from mimic4_preprocessing.timeseries import mimic4TSP
 
-# Get the directory where this script is located
 SCRIPT_DIR = Path(__file__).parent.absolute()
 
 def parse_args():
@@ -28,7 +28,7 @@ def parse_args():
 def main():
     args = parse_args()
     if args.pipe:
-        print("[INFO] Running in pipeline mode: loading all config from paths.yaml in script directory")
+        logger.info("[INFO] Running in pipeline mode: loading all config from paths.yaml in script directory")
         import yaml
         with open('paths.yaml', 'r') as f:
             paths = yaml.safe_load(f)
@@ -37,7 +37,7 @@ def main():
         user_input = paths.get('user_input_dir')
         config_path = 'config.json'
     else:
-        print("[INFO] Running in standalone mode: using command-line arguments and defaults")
+        logger.info("[INFO] Running in standalone mode: using command-line arguments and defaults")
         data_path = args.data_path or str(SCRIPT_DIR / 'data')
         auxillary_files = args.auxillary_files or str(SCRIPT_DIR / 'auxillary_files')
         user_input = args.user_input or str(SCRIPT_DIR / 'auxillary_files/user_input')

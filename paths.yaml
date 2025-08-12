@@ -1,0 +1,25 @@
+mimic3_source: source/mimic3/
+mimic4_source: source/mimic4/
+hirid_source: source/hirid/
+eicu_source: source/eicu/
+amsterdam_source: source/amsterdam/
+data_dir: data/
+data_path: data/
+mimic3_data: data/mimic3_data/
+mimic4_data: data/mimic4_data/
+hirid_data: data/hirid_data/
+eicu_data: data/eicu_data/
+amsterdam_data: data/amsterdam_data/
+auxillary_files: auxillary_files/
+user_input_dir: auxillary_files/user_input
+omop_vocabulary_dir: auxillary_files/OMOP_vocabulary
+medication_mapping_dir: auxillary_files/medication_mapping_files
+vocabulary: auxillary_files/OMOP_vocabulary
+user_input: auxillary_files/user_input
+medication_mapping_files: auxillary_files/medication_mapping_files
+diagnoses_json: auxillary_files/diagnoses.json
+medications_v11_json: auxillary_files/medications_v11.json
+dataset_harmonized: data/blendedICU_harmonized/
+omop_output: data/omop/
+selected_datasets:
+- mimic4

@@ -41,22 +41,12 @@ BlendedICU dataset from the AmsterdamUMCdb, eICU, HiRID, MIMIC-III and MIMIC-IV 
 Before you begin
 ---
 
-The codes require some user input to run. 
-#### `paths.json` 
-Fill the following paths in the `path.json` file. The file should be formatted as such:
-```
-{
-  "data_path": "pth/to/BLENDED_ICU/",
-  "eicu_source_path":"pth/to/eicu/installation/",
-  "mimic3_source_path": "pth/to/mimic3/installation/",
-  "mimic4_source_path": "pth/to/mimic4/installation/",
-  "amsterdam_source_path": "pth/to/amsterdam/installation/",
-  "hirid_source_path": "pth/to/hirid/installation/",
-  "auxillary_files": "auxillary_files/",
-  "vocabulary" : "auxillary_files/OMOP_vocabulary/",
-  "user_input" : "auxillary_files/user_input/",
-  "medication_mapping_files": "auxillary_files/medication_mapping_files/"
-}
+Update August 2025: The code can be now be run in its entirety via the run_pipeline.py script. It allows selection of data sources and defining custom locations for sources and auxillary files.
+
+Alternatively, scripts can be run separately, either using the --pipe argument to read paths from paths.yaml file or by defining all the paths via arguments.
+
+Currently the only working part of this pipeline is mimic4
+
 ```
 #### `config.json` 
 This file contains parameters for customization of the processing pipeline. 

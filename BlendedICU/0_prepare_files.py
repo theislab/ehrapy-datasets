@@ -22,6 +22,8 @@ from omopize.medication_mapping import MedicationMapping
 from omopize.omop_diagnoses import DiagnosesMapping
 from omop_cdm import omop_parquet 
 
+from lamin_utils import logger
+
 # Get the directory where this script is located
 SCRIPT_DIR = Path(__file__).parent.absolute()
 
@@ -58,7 +60,7 @@ def get_source_path(args, source_name):
 def main():
     args = parse_args()
     if args.pipe:
-        print("[INFO] Running in pipeline mode: loading all config from paths.yaml in script directory")
+        logger.info("[INFO] Running in pipeline mode: loading all paths from paths.yaml in script directory")
         import yaml
         with open('paths.yaml', 'r') as f:
             paths = yaml.safe_load(f)
@@ -74,7 +76,7 @@ def main():
         medication_mapping = paths.get('medication_mapping_dir')
         selected_datasets = paths.get('selected_datasets', ['hirid', 'amsterdam', 'mimic4', 'mimic3', 'eicu'])
     else:
-        print("[INFO] Running in standalone mode: using command-line arguments and defaults")
+        logger.info("[INFO] Running in standalone mode: using command-line arguments or defaults")
         data_path = args.data_path or str(SCRIPT_DIR / 'data')
         mimic4_source = args.mimic4_source or str(SCRIPT_DIR / 'source' / 'mimic4')
         mimic3_source = args.mimic3_source or str(SCRIPT_DIR / 'source' / 'mimic3')

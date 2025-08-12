@@ -100,7 +100,7 @@ class FlatAndLabelsProcessor(DataProcessor):
             self.labels = self._reindexing(self.labels)
         
         print(f'number of admissions after preprocessing : {len(self.labels)}')
-        self.save(self.labels, f'{self.savepath}preprocessed_labels.parquet')
+        self.save(self.labels, self.savepath / 'preprocessed_labels.parquet')
         return self.labels
         
     def run_flat_and_labels(self):        

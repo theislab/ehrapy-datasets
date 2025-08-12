@@ -10,6 +10,7 @@ are optional and customizable using the config.json file.
 import argparse
 from pathlib import Path
 import yaml
+from lamin_utils import logger
 
 from blended_preprocessing.flat_and_labels import blended_FLProcessor
 from blended_preprocessing.diagnoses import blended_DiagProcessor
@@ -41,7 +42,7 @@ def get_selected_datasets_from_yaml(paths_path):
 def main():
     args = parse_args()
     if args.pipe:
-        print("[INFO] Running in pipeline mode: loading all paths from paths.yaml in script directory")
+        logger.info("[INFO] Running in pipeline mode: loading all paths from paths.yaml in script directory")
         paths_path = SCRIPT_DIR / 'paths.yaml'
         with open(paths_path, 'r') as f:
             paths_dic = yaml.safe_load(f)
@@ -51,7 +52,7 @@ def main():
         dp = blended_DiagProcessor(datasets=selected_datasets, pth_dic=paths_dic)
         dp.run()
     else:
-        print("[INFO] Running in standalone mode: using command-line arguments and defaults")
+        logger.info("[INFO] Running in standalone mode: using command-line arguments and defaults")
         if args.datasets:
             selected_datasets = [d.strip() for d in args.datasets.split(',') if d.strip() in ALL_DATASETS]
             if not selected_datasets:

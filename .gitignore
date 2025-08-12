@@ -147,3 +147,5 @@ BlendedICU/data/
 BlendedICU/source/
 BlendedICU/auxillary_files/OMOP_vocabulary/
 BlendedICU/auxillary_files/medications.json
+BlendedICU/auxillary_files/medication_mapping_files/drugnames.parquet
+BlendedICU/auxillary_files/medication_mapping_files/drugnames.parquet
