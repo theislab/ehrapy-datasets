@@ -1,5 +1,6 @@
 import gzip
 import os
+import pandas as pd
 
 def compress_csv_files_in_folder(folder_path):
     # Iterate over all files in the folder
@@ -16,5 +17,15 @@ def compress_csv_files_in_folder(folder_path):
             print(f"Compressed: {gz_file_path}")
 
 # Specify the folder path containing your .csv files
-folder_path = '/home/andreas/Helmholtz/ehrapy-datasets/BlendedICU/source/mimic4/hosp/'
-compress_csv_files_in_folder(folder_path)
+#folder_path = '/home/andreas/Helmholtz/ehrapy-datasets/BlendedICU/source/mimic4/hosp/'
+#compress_csv_files_in_folder(folder_path)
+
+def read_one_column_from_csv(file_path, column_name):
+    with gzip.open(file_path, 'rt', encoding='utf-8', errors='replace') as f:
+        df = pd.read_csv(f, usecols=[column_name])
+    return df[column_name].dropna().tolist()
+
+file_path = 'source/mimic4large/hosp/prescriptions.csv.gz'
+column_name = 'form_rx'
+data = read_one_column_from_csv(file_path, column_name)
+print(data)

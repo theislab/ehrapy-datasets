@@ -1,4 +1,7 @@
 name: pycu-blend
+channels:
+- conda-forge
+- defaults
 dependencies:
 - python=3.10
 - numpy=1.26.3
@@ -11,3 +14,4 @@ dependencies:
 - chardet=5.2.0
 - pyyaml=6.0.1
 - lamin_utils
+- warnings

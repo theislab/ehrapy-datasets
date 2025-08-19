@@ -685,6 +685,17 @@ class OMOP_converter(blendedicuTSP):
         print(f'Saving {savepath}')
         table.to_parquet(savepath, schema=schema)
 
+    def export_table_csv(self, table, name):
+        """
+        Exports a table to CSV.
+        """
+        table = table.reset_index(drop=True)
+        self._sanity_checks(table, name)
+
+        savepath = self.savedir / f'{name}.csv'
+        print(f'Saving {savepath}')
+        table.to_csv(savepath, index=False)
+
     def _create_empty_tables(self):
         '''Creates empty parquet tables, except for measurement
         and drug_exposure which will be saved as multiple parquet.'''

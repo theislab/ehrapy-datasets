@@ -1,5 +1,5 @@
 mimic3_source: source/mimic3/
-mimic4_source: source/mimic4/
+mimic4_source: source/subsample/
 hirid_source: source/hirid/
 eicu_source: source/eicu/
 amsterdam_source: source/amsterdam/
